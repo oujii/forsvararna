@@ -304,9 +304,9 @@ export const WindowsStartbar: React.FC<WindowsStartbarProps> = ({
             } ${
               !isChatWindowClosed ? "after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-blue-500" : ""
             }`}
-            onClick={() => {
-              if (onToggleChatWindow) onToggleChatWindow();
-              if (onFocusWindow) onFocusWindow('chat');
+            onClick={(e) => {
+              e.preventDefault();
+              // Chat functionality disabled
             }}
             title="Messenger" // Update title for accessibility/tooltip
           >

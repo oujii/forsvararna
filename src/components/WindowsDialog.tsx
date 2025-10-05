@@ -23,9 +23,9 @@ export const WindowsDialog: React.FC<WindowsDialogProps> = ({
   onFocus
 }) => {
   const [isMaximized, setIsMaximized] = useState(false); // Start windowed
-  const [currentUrl, setCurrentUrl] = useState("/pdf-reader/index.html"); // Default to PDF reader
-  const [displayUrl, setDisplayUrl] = useState("file:///adam.pdf"); // Initial display URL
-  const [title, setTitle] = useState("adam.pdf"); // Initial title
+  const [currentUrl, setCurrentUrl] = useState("/aftonbladet/index.html"); // Default to Aftonbladet
+  const [displayUrl, setDisplayUrl] = useState("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge"); // Initial display URL
+  const [title, setTitle] = useState("Uppgifter: Gängkopplad man sköts..."); // Initial title
   const [showIframeOverlay, setShowIframeOverlay] = useState(!isActive);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -191,12 +191,12 @@ export const WindowsDialog: React.FC<WindowsDialogProps> = ({
           setTitle("Google Chrome"); // Fallback title
         }
 
-        // Reset URL to base polisen.se if the loaded page is the initial index.html
+        // Reset URL to base aftonbladet.se if the loaded page is the initial index.html
         try {
             const iframePathname = iframe.contentWindow?.location.pathname;
             if (iframePathname && iframePathname.endsWith('/index.html')) {
-                setDisplayUrl("file:///adam.pdf");
-                setTitle("adam.pdf");
+                setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge");
+                setTitle("Uppgifter: Gängkopplad man sköts...");
             } else if (iframeTitle) {
                  // Keep the title update for other pages if needed
                  setTitle(`${iframeTitle}`);
@@ -204,16 +204,16 @@ export const WindowsDialog: React.FC<WindowsDialogProps> = ({
         } catch(e) {
              console.warn("Could not access iframe pathname:", e);
              // Fallback if access fails
-             setDisplayUrl("file:///adam.pdf");
-             setTitle("adam.pdf");
+             setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge");
+             setTitle("Uppgifter: Gängkopplad man sköts...");
         }
 
       }, 100); // Small delay might help
     } catch (error) {
       console.warn("Could not access iframe content:", error);
        // Fallback if access fails
-       setTitle("adam.pdf");
-       setDisplayUrl("file:///adam.pdf"); // Reset URL on error
+       setTitle("Uppgifter: Gängkopplad man sköts...");
+       setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge"); // Reset URL on error
     }
   };
 

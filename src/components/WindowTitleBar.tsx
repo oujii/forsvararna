@@ -71,19 +71,12 @@ const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
             <button
               className="w-[46px] h-8 flex items-center justify-center hover:bg-white/10 active:bg-white/20 transition-colors"
               onClick={handleMaximizeClick}
-              aria-label={isFullscreen ? "Restore" : "Maximize"}
+              aria-label="Maximize"
             >
-              {isFullscreen ? (
-                // Restore icon (two overlapping squares)
-                <svg width="10" height="10" viewBox="0 0 10 10" fill={iconColor}>
-                  <path d="M2,0v2h6v6h2V0H2z M0,2v8h8V2H0z M7,3v5H1V3H7z"></path>
-                </svg>
-              ) : (
-                // Maximize icon (single square)
-                <svg width="10" height="10" viewBox="0 0 10 10" fill={iconColor}>
-                  <path d="M0,0v10h10V0H0z M9,9H1V1h8V9z"></path>
-                </svg>
-              )}
+              {/* Maximize icon (single square) - always shown */}
+              <svg width="10" height="10" viewBox="0 0 10 10" fill={iconColor}>
+                <path d="M0,0v10h10V0H0z M9,9H1V1h8V9z"></path>
+              </svg>
             </button>
             <button
               className="w-[46px] h-8 flex items-center justify-center hover:bg-red-600 active:bg-red-400 transition-colors"
@@ -108,17 +101,11 @@ const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
       >
         <div className="flex items-center">
           <span className="text-white text-sm font-normal">
-          <div className="flex items-center -ml-4" style={{ marginBottom: '-4px' }}>
+          <div className="flex items-center -ml-4" style={{ marginBottom: '-4px', backgroundColor: 'white' }}>
 
   <img src="../left.png" alt="Left S" className="bg-white h-9 pr-1"  object-contain/>
 
-<svg className="bg-white w-4 pt-2 pb-3" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2">
-  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-  <polyline points="14,2 14,8 20,8"/>
-  <line x1="16" y1="13" x2="8" y2="13"/>
-  <line x1="16" y1="17" x2="8" y2="17"/>
-  <polyline points="10,9 9,9 8,9"/>
-</svg>
+<img src="/aftonbladet/aftonbladet.png" alt="Aftonbladet" className="bg-white w-4 h-4 my-2.5" />
   <button className="bg-white h-9 pl-2 pb-1.5 pr-6 text-xs rounded-none text-gray-600">
     {title}
   </button>
@@ -144,19 +131,12 @@ const WindowTitleBar: React.FC<WindowTitleBarProps> = ({
           <button
             className="w-[46px] h-8 flex items-center justify-center hover:bg-white/10 active:bg-white/20 transition-colors"
             onClick={handleMaximizeClick}
-            aria-label={isFullscreen ? "Restore" : "Maximize"}
+            aria-label="Maximize"
           >
-            {isFullscreen ? (
-              // Restore icon (two overlapping squares)
-              <svg width="10" height="10" viewBox="0 0 10 10" fill={iconColor}>
-                <path d="M2,0v2h6v6h2V0H2z M0,2v8h8V2H0z M7,3v5H1V3H7z"></path>
-              </svg>
-            ) : (
-              // Maximize icon (single square)
-              <svg width="10" height="10" viewBox="0 0 10 10" fill={iconColor}>
-                <path d="M0,0v10h10V0H0z M9,9H1V1h8V9z"></path>
-              </svg>
-            )}
+            {/* Maximize icon (single square) - always shown */}
+            <svg width="10" height="10" viewBox="0 0 10 10" fill={iconColor}>
+              <path d="M0,0v10h10V0H0z M9,9H1V1h8V9z"></path>
+            </svg>
           </button>
           <button 
             className="w-[46px] h-8 flex items-center justify-center hover:bg-red-600 active:bg-red-400 transition-colors" 
