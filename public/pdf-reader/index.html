@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF-läsare - adam.pdf</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Anpassad scrollbar för att matcha Windows-stilen */
+        body::-webkit-scrollbar {
+            width: 12px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #e4e4e4;
+        }
+        body::-webkit-scrollbar-thumb {
+            background: #d4d4d4;
+            border: 3px solid #e4e4e4;
+            border-radius: 10px;
+        }
+        body::-webkit-scrollbar-thumb:hover {
+            background: #b0b0b0;
+        }
+        /* Simulerar fokus-outline i Windows */
+        .win-focus-ring:focus-visible {
+            outline: 2px solid #0078d4;
+            outline-offset: 1px;
+        }
+    </style>
+</head>
+<body class="bg-gray-200">
+
+    <!-- Huvudcontainer för applikationen -->
+    <div id="app-window" class="w-full bg-gray-200 flex flex-col">
+        
+        <!-- Verktygsfält -->
+        <nav class="bg-gray-100 p-1 flex items-center justify-between border-b border-gray-300 flex-shrink-0 sticky top-0 z-10 shadow">
+             <div class="flex items-center gap-1 pl-2">
+                <input type="file" id="file-upload" class="hidden" accept=".pdf">
+                <button id="open-file-btn" title="Öppna fil" class="win-focus-ring flex items-center gap-2 px-3 py-1 text-sm rounded hover:bg-gray-200 border border-gray-300 bg-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                    </svg>
+                    Öppna
+                </button>
+             </div>
+             <div class="flex items-center gap-2">
+                <button id="zoom-out-btn" title="Zooma ut" class="win-focus-ring p-2 rounded hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                    </svg>
+                </button>
+                <span id="zoom-level" class="text-sm text-gray-700 w-16 text-center select-none">100%</span>
+                <button id="zoom-in-btn" title="Zooma in" class="win-focus-ring p-2 rounded hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7m3-3v6" />
+                    </svg>
+                </button>
+             </div>
+             <div class="flex items-center gap-2 pr-2">
+                <button title="Anpassa till sida" class="win-focus-ring p-2 rounded hover:bg-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                    </svg>
+                </button>
+                <button title="Anpassa till bredd" class="win-focus-ring p-2 rounded hover:bg-gray-200">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 12L4 9m3 7l3-7m-3 7h10M17 16V4m0 12l3-7m-3 7l-3-7" />
+                    </svg>
+                </button>
+             </div>
+        </nav>
+
+        <!-- PDF-visningsområde -->
+        <main class="pdf-viewer-body flex-grow p-4 sm:p-8">
+            <!-- Inladdningsindikator -->
+            <div id="loader-container" class="w-full flex justify-center pt-24">
+                <div class="flex flex-col items-center gap-4">
+                    <svg class="animate-spin h-10 w-10 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="text-gray-600 text-sm">Laddar dokument...</p>
+                </div>
+            </div>
+
+            <div id="pdf-content" class="hidden">
+                <div class="pdf-page-container mx-auto">
+                    <div class="bg-white p-8 sm:p-12 shadow-lg w-full max-w-4xl mx-auto" style="aspect-ratio: 8.5 / 11.5;">
+                        <h2 class="text-xs font-mono uppercase text-gray-500 tracking-wider">SMS-KORRESPONDENS EXTRAHERAT FRÅN:</h2>
+                        <h1 class="text-lg font-mono mb-6 text-gray-800">Enhet tillhörande +46734442526</h1>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm font-mono border-collapse">
+                                <thead class="border-b-2 border-black">
+                                    <tr>
+                                        <th class="p-2 text-left w-12">#</th>
+                                        <th class="p-2 text-left">Riktning</th>
+                                        <th class="p-2 text-left">Avsändare</th>
+                                        <th class="p-2 text-left">Meddelande</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">001</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Framme!</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">002</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Framme!</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">003</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Grannen är polis. Du borde sagt. Kan hon bli ett problem?</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">004</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Hon är ofarlig. Hennes man är alkis. Harmlösa.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">005</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Eller? Problem?</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">006</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Hon kom i vägen för övervakningskamerorna. Men jag löser det. Gillar henne inte.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">007</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Vi borde inte ha kontakt nu på ett tag.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">008</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Svårt. Men ok</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">009</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Jag känner din doft i varje rum.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">010</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Hur går det?</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">011</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Hallå?</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">012</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Kan du svara?</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">013</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Han har hittat kroppen.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">014</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Polisen är på väg.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">015</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Jag tänker på dig hela tiden.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">016</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Nu gör vi det här.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">017</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Hörs bara om vi måste.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">018</td><td class="p-2 align-top">UTGÅENDE</td><td class="p-2 align-top">+46734442526</td><td class="p-2">Tänker på dig alltid.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">019</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Ring mig.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">020</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Kan du snälla ringa mig.</td></tr>
+                                    <tr class="border-b border-gray-200"><td class="p-2 align-top">021</td><td class="p-2 align-top">INKOMMANDE</td><td class="p-2 align-top">+39337246614</td><td class="p-2">Måste prata.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-8 text-center font-mono text-xs text-gray-400">
+                            <p>SLUT PÅ LOGG</p>
+                            <p>Antal meddelanden: 21</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const zoomInBtn = document.getElementById('zoom-in-btn');
+            const zoomOutBtn = document.getElementById('zoom-out-btn');
+            const zoomLevelDisplay = document.getElementById('zoom-level');
+            const pdfContent = document.getElementById('pdf-content');
+            const openFileBtn = document.getElementById('open-file-btn');
+            const fileUpload = document.getElementById('file-upload');
+            const loader = document.getElementById('loader-container');
+
+            let currentZoom = 100;
+            const ZOOM_STEP = 10;
+            const MIN_ZOOM = 50;
+            const MAX_ZOOM = 200;
+
+            function updateZoom() {
+                pdfContent.style.transform = `scale(${currentZoom / 100})`;
+                pdfContent.style.transformOrigin = 'top center';
+                zoomLevelDisplay.textContent = `${currentZoom}%`;
+            }
+
+            zoomInBtn.addEventListener('click', () => {
+                if (currentZoom < MAX_ZOOM) {
+                    currentZoom += ZOOM_STEP;
+                    updateZoom();
+                }
+            });
+
+            zoomOutBtn.addEventListener('click', () => {
+                if (currentZoom > MIN_ZOOM) {
+                    currentZoom -= ZOOM_STEP;
+                    updateZoom();
+                }
+            });
+            
+            openFileBtn.addEventListener('click', () => {
+                fileUpload.click();
+            });
+
+            fileUpload.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    document.querySelector('.pdf-page-container').innerHTML = 
+                        `<div class="bg-white p-12 shadow-lg w-full max-w-4xl mx-auto">
+                            <h1 class="text-2xl">Ny fil vald: ${file.name}</h1>
+                            <p>Innehållet skulle renderas här.</p>
+                        </div>`;
+                    console.log(`Vald fil: ${file.name}`);
+                }
+            });
+
+            // Fejkad inladdningstid
+            setTimeout(() => {
+                if (loader) loader.style.display = 'none';
+                if (pdfContent) pdfContent.classList.remove('hidden');
+            }, 1500); // 1.5 sekunder
+
+            // Initiera zoom-nivån
+            updateZoom();
+        });
+    </script>
+</body>
+</html>
+
+
