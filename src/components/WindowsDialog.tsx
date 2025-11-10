@@ -24,8 +24,8 @@ export const WindowsDialog: React.FC<WindowsDialogProps> = ({
 }) => {
   const [isMaximized, setIsMaximized] = useState(false); // Start windowed
   const [currentUrl, setCurrentUrl] = useState("/aftonbladet/index.html"); // Default to Aftonbladet
-  const [displayUrl, setDisplayUrl] = useState("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge"); // Initial display URL
-  const [title, setTitle] = useState("Uppgifter: Gängkopplad man sköts..."); // Initial title
+  const [displayUrl, setDisplayUrl] = useState("https://www.aftonbladet.se/"); // Initial display URL
+  const [title, setTitle] = useState("Nyheter från Sveriges största nyhetssajt"); // Initial title
   const [showIframeOverlay, setShowIframeOverlay] = useState(!isActive);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -183,37 +183,31 @@ export const WindowsDialog: React.FC<WindowsDialogProps> = ({
         const iframe = iframeRef.current;
         if (!iframe) return;
 
-        // Update Title
-        const iframeTitle = iframe.contentDocument?.title;
-        if (iframeTitle) {
-          setTitle(`${iframeTitle} - Google Chrome`);
-        } else {
-          setTitle("Google Chrome"); // Fallback title
-        }
-
-        // Reset URL to base aftonbladet.se if the loaded page is the initial index.html
+        // Update URL based on loaded page
         try {
             const iframePathname = iframe.contentWindow?.location.pathname;
+            console.log("Iframe pathname:", iframePathname);
+
             if (iframePathname && iframePathname.endsWith('/index.html')) {
+                setDisplayUrl("https://www.aftonbladet.se/");
+                setTitle("Nyheter från Sveriges största nyhetssajt");
+            } else if (iframePathname && iframePathname.endsWith('/artikel.html')) {
                 setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge");
                 setTitle("Uppgifter: Gängkopplad man sköts...");
-            } else if (iframeTitle) {
-                 // Keep the title update for other pages if needed
-                 setTitle(`${iframeTitle}`);
             }
         } catch(e) {
              console.warn("Could not access iframe pathname:", e);
              // Fallback if access fails
-             setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge");
-             setTitle("Uppgifter: Gängkopplad man sköts...");
+             setDisplayUrl("https://www.aftonbladet.se/");
+             setTitle("Nyheter från Sveriges största nyhetssajt");
         }
 
       }, 100); // Small delay might help
     } catch (error) {
       console.warn("Could not access iframe content:", error);
        // Fallback if access fails
-       setTitle("Uppgifter: Gängkopplad man sköts...");
-       setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge"); // Reset URL on error
+       setTitle("Nyheter från Sveriges största nyhetssajt");
+       setDisplayUrl("https://www.aftonbladet.se/"); // Reset URL on error
     }
   };
 
@@ -248,6 +242,33 @@ export const WindowsDialog: React.FC<WindowsDialogProps> = ({
       }
     };
   }, [currentUrl]); // Re-run if the iframe src changes (though it's static for now)
+
+  // Poll iframe URL to detect navigation within the iframe
+  useEffect(() => {
+    const checkIframeUrl = () => {
+      try {
+        const iframe = iframeRef.current;
+        if (!iframe) return;
+
+        const iframePathname = iframe.contentWindow?.location.pathname;
+
+        if (iframePathname && iframePathname.endsWith('/index.html')) {
+          setDisplayUrl("https://www.aftonbladet.se/");
+          setTitle("Nyheter från Sveriges största nyhetssajt");
+        } else if (iframePathname && iframePathname.endsWith('/artikel.html')) {
+          setDisplayUrl("https://www.aftonbladet.se/nyheter/a/8qr6LW/uppgifter-gangkopplad-man-skots-till-dods-i-huddinge");
+          setTitle("Uppgifter: Gängkopplad man sköts...");
+        }
+      } catch (e) {
+        // Silently fail if we can't access iframe
+      }
+    };
+
+    // Check every 500ms
+    const interval = setInterval(checkIframeUrl, 500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Only show overlay when window is definitely not active
   useEffect(() => {
