@@ -18,7 +18,7 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
   isActive,
   onFocus
 }) => {
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(true);
   const windowRef = useRef<HTMLDivElement>(null);
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
