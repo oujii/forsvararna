@@ -25,6 +25,7 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [availableBounds, setAvailableBounds] = useState({ width: 0, height: 0 });
 
   const calculateWindowedDimensions = () => {
     const taskbarHeight = 48;
@@ -47,6 +48,20 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       setWindowSize({ width: dimensions.width, height: dimensions.height });
     }
   }, [windowSize.width, windowSize.height]);
+
+  useEffect(() => {
+    const updateBounds = () => {
+      const taskbarHeight = 48;
+      setAvailableBounds({
+        width: window.innerWidth,
+        height: window.innerHeight - taskbarHeight
+      });
+    };
+
+    updateBounds();
+    window.addEventListener("resize", updateBounds);
+    return () => window.removeEventListener("resize", updateBounds);
+  }, []);
 
   const handleClose = () => {
     setIsClosed(true);
@@ -120,6 +135,34 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
     };
   }, [isDragging, dragOffset, isMaximized]);
 
+  useEffect(() => {
+    const handleWindowResize = () => {
+      if (isMaximized || !windowRef.current) return;
+
+      const taskbarHeight = 48;
+      const availableWidth = window.innerWidth;
+      const availableHeight = window.innerHeight - taskbarHeight;
+      const windowRect = windowRef.current.getBoundingClientRect();
+
+      let newX = position.x;
+      let newY = position.y;
+
+      if (position.x + windowRect.width > availableWidth) {
+        newX = Math.max(0, availableWidth - windowRect.width);
+      }
+      if (position.y + windowRect.height > availableHeight) {
+        newY = Math.max(0, availableHeight - windowRect.height);
+      }
+
+      if (newX !== position.x || newY !== position.y) {
+        setPosition({ x: newX, y: newY });
+      }
+    };
+
+    window.addEventListener("resize", handleWindowResize);
+    return () => window.removeEventListener("resize", handleWindowResize);
+  }, [position, isMaximized]);
+
   if (isClosed || isMinimized) return null;
 
   return (
@@ -136,6 +179,8 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
         top: `${position.y}px`,
         width: `${windowSize.width}px`,
         height: `${windowSize.height}px`,
+        maxWidth: availableBounds.width ? `${availableBounds.width}px` : undefined,
+        maxHeight: availableBounds.height ? `${availableBounds.height}px` : undefined,
         resize: "both",
         overflow: "hidden",
         minWidth: "360px",
