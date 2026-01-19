@@ -150,7 +150,7 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
         onMouseDown={handleMouseDown}
       >
         <div className="flex items-center">
-          <span className="text-xs text-gray-700">Nytt program</span>
+          <span className="text-xs text-gray-700">GPS-spårning</span>
         </div>
         <div className="flex items-center">
           <button
@@ -188,9 +188,139 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 bg-[#bfbfbf] p-6">
-        <div className="w-full h-full bg-[#d0d0d0] border border-[#a6a6a6] flex items-center justify-center text-lg text-gray-700">
-          hello world
+      <div className="flex-1 bg-[#d7d7d7] flex flex-col">
+        <div className="h-8 bg-[#efefef] border-b border-[#c7c7c7] flex items-center px-3 text-xs text-gray-700">
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Översikt</button>
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Karta</button>
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Enheter</button>
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Händelser</button>
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Rapporter</button>
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Verktyg</button>
+          <button className="px-2 py-1 hover:bg-[#dedede] rounded">Hjälp</button>
+          <div className="ml-auto text-[11px] text-gray-600">
+            Enhet: GPS-4471 · Operatör: N. Eklund
+          </div>
+        </div>
+
+        <div className="flex-1 flex overflow-hidden">
+          <div className="w-64 bg-[#f2f2f2] border-r border-[#c7c7c7] flex flex-col">
+            <div className="p-3 border-b border-[#d2d2d2] text-xs text-gray-700">
+              <div className="font-semibold">Märkta enheter</div>
+              <div className="text-[11px] text-gray-500">Aktiva: 3 · Passiva: 1</div>
+            </div>
+            <div className="flex-1 overflow-auto text-xs">
+              <div className="px-3 py-2 border-b border-[#e3e3e3] bg-white">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">GPS-4471</span>
+                  <span className="text-[10px] text-green-700">AKTIV</span>
+                </div>
+                <div className="text-[11px] text-gray-500">Senast fix: 16:34</div>
+                <div className="text-[11px] text-gray-500">Kyndelsö · 59.3921, 19.7364</div>
+              </div>
+              <div className="px-3 py-2 border-b border-[#e3e3e3] hover:bg-[#ededed]">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">GPS-4428</span>
+                  <span className="text-[10px] text-green-700">AKTIV</span>
+                </div>
+                <div className="text-[11px] text-gray-500">Senast fix: 16:29</div>
+                <div className="text-[11px] text-gray-500">Utö · 58.9662, 18.7635</div>
+              </div>
+              <div className="px-3 py-2 border-b border-[#e3e3e3] hover:bg-[#ededed]">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">GPS-4310</span>
+                  <span className="text-[10px] text-green-700">AKTIV</span>
+                </div>
+                <div className="text-[11px] text-gray-500">Senast fix: 16:11</div>
+                <div className="text-[11px] text-gray-500">Möja · 59.4370, 18.8882</div>
+              </div>
+              <div className="px-3 py-2 hover:bg-[#ededed]">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold">GPS-4199</span>
+                  <span className="text-[10px] text-gray-500">PASSIV</span>
+                </div>
+                <div className="text-[11px] text-gray-500">Senast fix: 12:05</div>
+                <div className="text-[11px] text-gray-500">Norrtälje · 59.7584, 18.7047</div>
+              </div>
+            </div>
+            <div className="p-3 border-t border-[#d2d2d2] text-[11px] text-gray-600">
+              Filter: Skärgård · Klassning: Intern
+            </div>
+          </div>
+
+          <div className="flex-1 bg-[#dcdcdc] border-r border-[#c7c7c7] flex flex-col">
+            <div className="h-9 bg-[#f7f7f7] border-b border-[#d2d2d2] flex items-center px-3 text-xs text-gray-700">
+              <div className="flex items-center gap-3">
+                <span className="font-semibold">Karta</span>
+                <span className="text-[11px] text-gray-500">Lager: Kustlinje · Skala 1:50 000</span>
+              </div>
+              <div className="ml-auto text-[11px] text-gray-500">Koordinater: 59.3921, 19.7364</div>
+            </div>
+            <div className="relative flex-1 bg-[#cfcfcf] overflow-hidden">
+              <img
+                src="/kyndelso-map.png"
+                alt="Karta över Kyndelsö"
+                className="w-full h-full object-contain"
+              />
+              <div
+                className="absolute"
+                style={{ top: "46%", left: "54%" }}
+              >
+                <div className="w-20 h-20 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-blue-500/30 border border-blue-500/60 flex items-center justify-center">
+                    <div className="w-3 h-3 rounded-full bg-blue-700"></div>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute bottom-2 left-2 bg-white/80 border border-[#bdbdbd] text-[10px] text-gray-700 px-2 py-1">
+                Kyndelsö · GPS-4471 · Fix 16:34:12
+              </div>
+            </div>
+          </div>
+
+          <div className="w-72 bg-[#f2f2f2] flex flex-col">
+            <div className="p-3 border-b border-[#d2d2d2] text-xs text-gray-700">
+              <div className="font-semibold">Enhetsdetaljer</div>
+              <div className="text-[11px] text-gray-500">Vald: GPS-4471</div>
+            </div>
+            <div className="flex-1 overflow-auto text-xs">
+              <div className="p-3 border-b border-[#e3e3e3]">
+                <div className="text-[11px] text-gray-500">Status</div>
+                <div className="font-semibold text-green-700">AKTIV · Sändning pågår</div>
+              </div>
+              <div className="p-3 border-b border-[#e3e3e3]">
+                <div className="text-[11px] text-gray-500">Senaste position</div>
+                <div className="font-semibold">Kyndelsö, Norrtälje kommun</div>
+                <div className="text-[11px] text-gray-600">Lat 59.3921 · Lon 19.7364</div>
+                <div className="text-[11px] text-gray-600">Noggrannhet: ±12 m</div>
+              </div>
+              <div className="p-3 border-b border-[#e3e3e3]">
+                <div className="text-[11px] text-gray-500">Rörelse</div>
+                <div className="text-[11px] text-gray-600">Hastighet: 0.4 kn</div>
+                <div className="text-[11px] text-gray-600">Riktning: 082°</div>
+                <div className="text-[11px] text-gray-600">Stillastående: 00:18:42</div>
+              </div>
+              <div className="p-3 border-b border-[#e3e3e3]">
+                <div className="text-[11px] text-gray-500">Batteri / signal</div>
+                <div className="text-[11px] text-gray-600">Batteri: 74%</div>
+                <div className="text-[11px] text-gray-600">Signal: 4/5</div>
+                <div className="text-[11px] text-gray-600">Senaste ping: 16:34:12</div>
+              </div>
+              <div className="p-3">
+                <div className="text-[11px] text-gray-500">Koppling</div>
+                <div className="text-[11px] text-gray-600">Ärende: 24-18342</div>
+                <div className="text-[11px] text-gray-600">Ägare: POU Nord</div>
+                <div className="text-[11px] text-gray-600">Prioritet: Hög</div>
+              </div>
+            </div>
+            <div className="p-3 border-t border-[#d2d2d2] text-[11px] text-gray-600">
+              <div>Senast uppdaterad: 16:34:12</div>
+              <div>GPS-signal: Aktiv</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="h-6 bg-[#efefef] border-t border-[#c7c7c7] px-3 flex items-center text-[11px] text-gray-700">
+          Status: Online · Kryptering: TLS 1.2 · Version 2.8.4 · Driftläge: Live
         </div>
       </div>
     </div>
