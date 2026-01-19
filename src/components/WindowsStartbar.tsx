@@ -332,6 +332,25 @@ export const WindowsStartbar: React.FC<WindowsStartbarProps> = ({
             <img src="/icon_app(blue).svg" alt="Secure Chat" className="w-6 h-6" />
           </button>
 
+          {/* Prototype App Icon Button */}
+          <button
+            className={`h-full w-12 mr-2 flex items-center justify-center hover:bg-gray-800 transition-colors relative ${
+              !isPrototypeWindowClosed && !isPrototypeWindowMinimized ? 'bg-gray-800' : ''
+            } ${
+              !isPrototypeWindowClosed ? "after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-1 after:bg-blue-500" : ""
+            }`}
+            onClick={(e) => {
+              e.preventDefault();
+              onTogglePrototypeWindow?.();
+            }}
+            title="Nytt program"
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" className="text-gray-200">
+              <rect x="3" y="3" width="18" height="18" rx="3" fill="#bdbdbd" />
+              <rect x="7" y="7" width="10" height="10" rx="2" fill="#d7d7d7" />
+            </svg>
+          </button>
+
 
           {/* Removed Incident Link */}
         </div>

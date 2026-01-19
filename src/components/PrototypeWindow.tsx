@@ -172,11 +172,16 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
             </svg>
           </button>
           <button
-            className="w-[46px] h-8 flex items-center justify-center hover:bg-red-600 active:bg-red-400 transition-colors"
+            className="group w-[46px] h-8 flex items-center justify-center hover:bg-red-600 active:bg-red-400 transition-colors"
             onClick={handleClose}
             aria-label="Close"
           >
-            <svg width="10" height="10" viewBox="0 0 10.2 10.2" fill="black">
+            <svg
+              width="10"
+              height="10"
+              viewBox="0 0 10.2 10.2"
+              className="fill-black group-hover:fill-white"
+            >
               <polygon points="10.2,0.7 9.5,0 5.1,4.4 0.7,0 0,0.7 4.4,5.1 0,9.5 0.7,10.2 5.1,5.8 9.5,10.2 10.2,9.5 5.8,5.1"></polygon>
             </svg>
           </button>
