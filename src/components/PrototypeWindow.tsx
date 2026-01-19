@@ -146,11 +146,11 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       onClick={handleWindowClick}
     >
       <div
-        className={`overflow-hidden shadow-md flex items-center justify-between h-10 pl-4 pr-0 bg-[#DEE1E6] border-b border-[#DEE1E6] ${!isMaximized ? "cursor-move" : ""}`}
+        className={`shrink-0 z-10 overflow-hidden shadow-md flex items-center justify-between h-10 pl-4 pr-0 bg-[#dfe3ea] border-b border-[#b8bcc2] ${!isMaximized ? "cursor-move" : ""}`}
         onMouseDown={handleMouseDown}
       >
         <div className="flex items-center">
-          <span className="text-xs text-gray-700">GPS-spårning</span>
+          <span className="text-xs font-medium text-gray-700">GPS-spårning</span>
         </div>
         <div className="flex items-center">
           <button
@@ -189,7 +189,7 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       </div>
 
       <div className="flex-1 bg-[#d7d7d7] flex flex-col">
-        <div className="h-8 bg-[#efefef] border-b border-[#c7c7c7] flex items-center px-3 text-xs text-gray-700">
+        <div className="h-8 bg-[#efefef] border-b border-[#c7c7c7] flex items-center px-3 text-xs text-gray-700 shrink-0">
           <button className="px-2 py-1 hover:bg-[#dedede] rounded">Översikt</button>
           <button className="px-2 py-1 hover:bg-[#dedede] rounded">Karta</button>
           <button className="px-2 py-1 hover:bg-[#dedede] rounded">Enheter</button>
