@@ -18,7 +18,7 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
   isActive,
   onFocus
 }) => {
-  const [isMaximized, setIsMaximized] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(true);
   const windowRef = useRef<HTMLDivElement>(null);
 
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -171,10 +171,15 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       ref={windowRef}
       className={cn(
         "flex flex-col bg-[#c7c7c7] shadow-xl border border-[#a0a0a0]",
-        isMaximized ? "fixed inset-0 bottom-12" : "absolute"
+        isMaximized ? "fixed" : "absolute"
       )}
       style={isMaximized ? {
-        zIndex: isActive ? 45 : 30
+        zIndex: isActive ? 45 : 30,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: "48px",
+        height: "calc(100vh - 48px)"
       } : {
         left: `${position.x}px`,
         top: `${position.y}px`,
@@ -308,6 +313,14 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
                 className="w-full h-full object-contain"
               />
               <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(20,40,60,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(20,40,60,0.12) 1px, transparent 1px)",
+                  backgroundSize: "40px 40px"
+                }}
+              />
+              <div
                 className="absolute"
                 style={{ top: "46%", left: "54%" }}
               >
@@ -319,6 +332,18 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
               </div>
               <div className="absolute bottom-2 left-2 bg-white/80 border border-[#bdbdbd] text-[10px] text-gray-700 px-2 py-1">
                 Kyndelsö · GPS-4471 · Fix 16:34:12
+              </div>
+              <div className="absolute bottom-2 right-3 bg-white/85 border border-[#bdbdbd] px-2 py-1 text-[10px] text-gray-700">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="h-2 w-28 border border-[#6f7a86]"
+                    style={{
+                      backgroundImage:
+                        "repeating-linear-gradient(90deg, #6f7a86, #6f7a86 2px, transparent 2px, transparent 14px)"
+                    }}
+                  />
+                  <span>500 m</span>
+                </div>
               </div>
             </div>
           </div>

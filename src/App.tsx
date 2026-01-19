@@ -31,10 +31,10 @@ const App = () => {
 
   // Prototype window state
   const [isPrototypeWindowMinimized, setIsPrototypeWindowMinimized] = useState(false);
-  const [isPrototypeWindowClosed, setIsPrototypeWindowClosed] = useState(true);
+  const [isPrototypeWindowClosed, setIsPrototypeWindowClosed] = useState(false);
 
   // Window focus management
-  const [activeWindow, setActiveWindow] = useState<'browser' | 'chat' | 'chat2' | 'mail' | 'prototype' | null>(null);
+  const [activeWindow, setActiveWindow] = useState<'browser' | 'chat' | 'chat2' | 'mail' | 'prototype' | null>('prototype');
 
   // State for scripted chat sequence
   const [isScriptedSequenceActive, setIsScriptedSequenceActive] = useState(false);
