@@ -170,10 +170,12 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       ref={windowRef}
       className={cn(
         "flex flex-col bg-[#c7c7c7] shadow-xl border border-[#a0a0a0]",
-        isMaximized ? "fixed inset-0 bottom-12" : "absolute"
+        isMaximized ? "fixed inset-0" : "absolute"
       )}
       style={isMaximized ? {
-        zIndex: isActive ? 45 : 30
+        zIndex: isActive ? 45 : 30,
+        bottom: "48px",
+        height: "calc(100vh - 48px)"
       } : {
         left: `${position.x}px`,
         top: `${position.y}px`,
