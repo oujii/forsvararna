@@ -25,15 +25,14 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [availableBounds, setAvailableBounds] = useState({ width: 0, height: 0 });
 
   const calculateWindowedDimensions = () => {
     const taskbarHeight = 48;
     const availableWidth = window.innerWidth;
     const availableHeight = window.innerHeight - taskbarHeight;
 
-    const width = Math.floor(availableWidth * 0.55);
-    const height = Math.floor(availableHeight * 0.55);
+    const width = Math.floor(availableWidth * 0.7);
+    const height = Math.floor(availableHeight * 0.75);
 
     const x = Math.floor((availableWidth - width) / 2);
     const y = Math.floor((availableHeight - height) / 2);
@@ -48,20 +47,6 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       setWindowSize({ width: dimensions.width, height: dimensions.height });
     }
   }, [windowSize.width, windowSize.height]);
-
-  useEffect(() => {
-    const updateBounds = () => {
-      const taskbarHeight = 48;
-      setAvailableBounds({
-        width: window.innerWidth,
-        height: window.innerHeight - taskbarHeight
-      });
-    };
-
-    updateBounds();
-    window.addEventListener("resize", updateBounds);
-    return () => window.removeEventListener("resize", updateBounds);
-  }, []);
 
   const handleClose = () => {
     setIsClosed(true);
@@ -81,15 +66,16 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
   };
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (isMaximized) return;
+    if (isMaximized || !e.target || !(e.target instanceof Element)) return;
 
-    if (e.target instanceof Element && e.target.closest("button")) {
+    if (e.target.closest("button") || e.target.closest("input") || e.target.closest("svg")) {
       return;
     }
 
+    setIsDragging(true);
     const windowRect = windowRef.current?.getBoundingClientRect();
+
     if (windowRect) {
-      setIsDragging(true);
       setDragOffset({
         x: e.clientX - windowRect.left,
         y: e.clientY - windowRect.top
@@ -137,25 +123,25 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
 
   useEffect(() => {
     const handleWindowResize = () => {
-      if (isMaximized || !windowRef.current) return;
+      if (!isMaximized && windowRef.current) {
+        const taskbarHeight = 48;
+        const availableWidth = window.innerWidth;
+        const availableHeight = window.innerHeight - taskbarHeight;
+        const windowRect = windowRef.current.getBoundingClientRect();
 
-      const taskbarHeight = 48;
-      const availableWidth = window.innerWidth;
-      const availableHeight = window.innerHeight - taskbarHeight;
-      const windowRect = windowRef.current.getBoundingClientRect();
+        let newX = position.x;
+        let newY = position.y;
 
-      let newX = position.x;
-      let newY = position.y;
+        if (position.x + windowRect.width > availableWidth) {
+          newX = Math.max(0, availableWidth - windowRect.width);
+        }
+        if (position.y + windowRect.height > availableHeight) {
+          newY = Math.max(0, availableHeight - windowRect.height);
+        }
 
-      if (position.x + windowRect.width > availableWidth) {
-        newX = Math.max(0, availableWidth - windowRect.width);
-      }
-      if (position.y + windowRect.height > availableHeight) {
-        newY = Math.max(0, availableHeight - windowRect.height);
-      }
-
-      if (newX !== position.x || newY !== position.y) {
-        setPosition({ x: newX, y: newY });
+        if (newX !== position.x || newY !== position.y) {
+          setPosition({ x: newX, y: newY });
+        }
       }
     };
 
@@ -179,12 +165,10 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
         top: `${position.y}px`,
         width: `${windowSize.width}px`,
         height: `${windowSize.height}px`,
-        maxWidth: availableBounds.width ? `${Math.max(0, availableBounds.width - position.x)}px` : undefined,
-        maxHeight: availableBounds.height ? `${Math.max(0, availableBounds.height - position.y)}px` : undefined,
         resize: "both",
         overflow: "hidden",
-        minWidth: "360px",
-        minHeight: "240px",
+        minWidth: "400px",
+        minHeight: "300px",
         cursor: isDragging ? "grabbing" : "default",
         zIndex: isActive ? 45 : 30
       }}
