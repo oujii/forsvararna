@@ -9,6 +9,7 @@ interface WindowsStartbarProps {
   onToggleChatWindow?: () => void; // Optional prop to toggle chat window
   onToggleChatWindow2?: () => void; // Optional prop to toggle chat window 2
   onToggleMailWindow?: () => void; // Optional prop to toggle mail window
+  onTogglePrototypeWindow?: () => void; // Optional prop to toggle prototype window
   isMainWindowMinimized?: boolean; // Window minimized status
   isMainWindowClosed?: boolean; // Window closed status
   isChatWindowMinimized?: boolean; // Chat window minimized status
@@ -17,8 +18,10 @@ interface WindowsStartbarProps {
   isChatWindow2Closed?: boolean; // Chat window 2 closed status
   isMailWindowMinimized?: boolean; // Mail window minimized status
   isMailWindowClosed?: boolean; // Mail window closed status
+  isPrototypeWindowMinimized?: boolean; // Prototype window minimized status
+  isPrototypeWindowClosed?: boolean; // Prototype window closed status
   onStartScriptedSequence?: () => void; // New prop to start the scripted chat sequence
-  onFocusWindow?: (windowType: 'browser' | 'chat' | 'chat2' | 'mail') => void; // Focus window function
+  onFocusWindow?: (windowType: 'browser' | 'chat' | 'chat2' | 'mail' | 'prototype') => void; // Focus window function
   systemDateTime: Date; // System date and time
   onSetSystemDateTime: (newDateTime: Date) => void; // Function to update system time
 }
@@ -28,6 +31,7 @@ export const WindowsStartbar: React.FC<WindowsStartbarProps> = ({
   onToggleChatWindow,
   onToggleChatWindow2,
   onToggleMailWindow,
+  onTogglePrototypeWindow,
   isMainWindowMinimized = false,
   isMainWindowClosed = false,
   isChatWindowMinimized = false,
@@ -36,6 +40,8 @@ export const WindowsStartbar: React.FC<WindowsStartbarProps> = ({
   isChatWindow2Closed = false,
   isMailWindowMinimized = false,
   isMailWindowClosed = false,
+  isPrototypeWindowMinimized = false,
+  isPrototypeWindowClosed = false,
   onStartScriptedSequence,
   onFocusWindow,
   systemDateTime,
@@ -180,6 +186,19 @@ export const WindowsStartbar: React.FC<WindowsStartbarProps> = ({
                   </svg>
                   <span className="text-xs">Settings</span>
                 </div>
+                <button
+                  className="flex flex-col items-center justify-center p-2 rounded hover:bg-[#f2f2f2] text-center"
+                  onClick={() => {
+                    setIsStartMenuOpen(false);
+                    onTogglePrototypeWindow?.();
+                  }}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="mb-1">
+                    <rect x="3" y="3" width="18" height="18" rx="3" stroke="#6b6b6b" strokeWidth="2" fill="#bdbdbd"/>
+                    <rect x="7" y="7" width="10" height="10" rx="2" fill="#d7d7d7"/>
+                  </svg>
+                  <span className="text-xs">Nytt program</span>
+                </button>
                 <div className="flex flex-col items-center justify-center p-2 rounded hover:bg-[#f2f2f2] text-center">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#d32f2f" className="mb-1">
                     <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" strokeWidth="2"/>

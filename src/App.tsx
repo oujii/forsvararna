@@ -29,8 +29,12 @@ const App = () => {
   const [isMailWindowMinimized, setIsMailWindowMinimized] = useState(false);
   const [isMailWindowClosed, setIsMailWindowClosed] = useState(true);
 
+  // Prototype window state
+  const [isPrototypeWindowMinimized, setIsPrototypeWindowMinimized] = useState(false);
+  const [isPrototypeWindowClosed, setIsPrototypeWindowClosed] = useState(true);
+
   // Window focus management
-  const [activeWindow, setActiveWindow] = useState<'browser' | 'chat' | 'chat2' | 'mail' | null>(null);
+  const [activeWindow, setActiveWindow] = useState<'browser' | 'chat' | 'chat2' | 'mail' | 'prototype' | null>(null);
 
   // State for scripted chat sequence
   const [isScriptedSequenceActive, setIsScriptedSequenceActive] = useState(false);
@@ -116,8 +120,23 @@ const App = () => {
     }
   };
 
+  const togglePrototypeWindowVisibility = () => {
+    if (isPrototypeWindowClosed) {
+      setIsPrototypeWindowClosed(false);
+      setIsPrototypeWindowMinimized(false);
+      setActiveWindow('prototype');
+    } else if (isPrototypeWindowMinimized) {
+      setIsPrototypeWindowMinimized(false);
+      setActiveWindow('prototype');
+    } else if (activeWindow === 'prototype') {
+      setIsPrototypeWindowMinimized(true);
+    } else {
+      setActiveWindow('prototype');
+    }
+  };
+
   // Function to handle window focus (bring to front)
-  const handleWindowFocus = (windowType: 'browser' | 'chat' | 'chat2' | 'mail') => {
+  const handleWindowFocus = (windowType: 'browser' | 'chat' | 'chat2' | 'mail' | 'prototype') => {
     setActiveWindow(windowType);
   };
 
@@ -155,6 +174,10 @@ const App = () => {
               setIsMailWindowMinimized={setIsMailWindowMinimized}
               isMailWindowClosed={isMailWindowClosed}
               setIsMailWindowClosed={setIsMailWindowClosed}
+              isPrototypeWindowMinimized={isPrototypeWindowMinimized}
+              setIsPrototypeWindowMinimized={setIsPrototypeWindowMinimized}
+              isPrototypeWindowClosed={isPrototypeWindowClosed}
+              setIsPrototypeWindowClosed={setIsPrototypeWindowClosed}
               activeWindow={activeWindow}
               onWindowFocus={handleWindowFocus}
               isScriptedSequenceActive={isScriptedSequenceActive}
@@ -171,6 +194,7 @@ const App = () => {
             onToggleChatWindow={toggleChatWindowVisibility}
             onToggleChatWindow2={toggleChatWindow2Visibility}
             onToggleMailWindow={toggleMailWindowVisibility}
+            onTogglePrototypeWindow={togglePrototypeWindowVisibility}
             isMainWindowMinimized={isMainWindowMinimized}
             isMainWindowClosed={isMainWindowClosed}
             isChatWindowMinimized={isChatWindowMinimized}
@@ -179,6 +203,8 @@ const App = () => {
             isChatWindow2Closed={isChatWindow2Closed}
             isMailWindowMinimized={isMailWindowMinimized}
             isMailWindowClosed={isMailWindowClosed}
+            isPrototypeWindowMinimized={isPrototypeWindowMinimized}
+            isPrototypeWindowClosed={isPrototypeWindowClosed}
             onStartScriptedSequence={handleStartScriptedSequence}
             onFocusWindow={handleWindowFocus}
             systemDateTime={systemDateTime}

@@ -3,6 +3,7 @@ import { WindowsDialog } from "../components/WindowsDialog";
 import { ChatWindow } from "../components/ChatWindow";
 import { ChatWindow2 } from "../components/ChatWindow2";
 import { MailWindow } from "../components/MailWindow";
+import { PrototypeWindow } from "../components/PrototypeWindow";
 
 // Define the props interface
 interface IndexProps {
@@ -22,8 +23,12 @@ interface IndexProps {
   setIsMailWindowMinimized: React.Dispatch<React.SetStateAction<boolean>>;
   isMailWindowClosed: boolean;
   setIsMailWindowClosed: React.Dispatch<React.SetStateAction<boolean>>;
-  activeWindow: 'browser' | 'chat' | 'chat2' | 'mail' | null;
-  onWindowFocus: (windowType: 'browser' | 'chat' | 'chat2' | 'mail') => void;
+  isPrototypeWindowMinimized: boolean;
+  setIsPrototypeWindowMinimized: React.Dispatch<React.SetStateAction<boolean>>;
+  isPrototypeWindowClosed: boolean;
+  setIsPrototypeWindowClosed: React.Dispatch<React.SetStateAction<boolean>>;
+  activeWindow: 'browser' | 'chat' | 'chat2' | 'mail' | 'prototype' | null;
+  onWindowFocus: (windowType: 'browser' | 'chat' | 'chat2' | 'mail' | 'prototype') => void;
   isScriptedSequenceActive: boolean;
   setIsScriptedSequenceActive: React.Dispatch<React.SetStateAction<boolean>>;
   systemDateTime: Date;
@@ -46,6 +51,10 @@ const Index: React.FC<IndexProps> = ({
   setIsMailWindowMinimized,
   isMailWindowClosed,
   setIsMailWindowClosed,
+  isPrototypeWindowMinimized,
+  setIsPrototypeWindowMinimized,
+  isPrototypeWindowClosed,
+  setIsPrototypeWindowClosed,
   activeWindow,
   onWindowFocus,
   isScriptedSequenceActive,
@@ -111,6 +120,15 @@ const Index: React.FC<IndexProps> = ({
         setIsClosed={setIsMailWindowClosed}
         isActive={activeWindow === 'mail'}
         onFocus={() => onWindowFocus('mail')}
+      />
+
+      <PrototypeWindow
+        isMinimized={isPrototypeWindowMinimized}
+        setIsMinimized={setIsPrototypeWindowMinimized}
+        isClosed={isPrototypeWindowClosed}
+        setIsClosed={setIsPrototypeWindowClosed}
+        isActive={activeWindow === 'prototype'}
+        onFocus={() => onWindowFocus('prototype')}
       />
     </div>
   );
