@@ -25,6 +25,7 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [availableBounds, setAvailableBounds] = useState({ width: 0, height: 0 });
 
   const calculateWindowedDimensions = () => {
     const taskbarHeight = 48;
@@ -47,6 +48,20 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
       setWindowSize({ width: dimensions.width, height: dimensions.height });
     }
   }, [windowSize.width, windowSize.height]);
+
+  useEffect(() => {
+    const updateBounds = () => {
+      const taskbarHeight = 48;
+      setAvailableBounds({
+        width: window.innerWidth,
+        height: window.innerHeight - taskbarHeight
+      });
+    };
+
+    updateBounds();
+    window.addEventListener("resize", updateBounds);
+    return () => window.removeEventListener("resize", updateBounds);
+  }, []);
 
   const handleClose = () => {
     setIsClosed(true);
@@ -165,6 +180,8 @@ export const PrototypeWindow: React.FC<PrototypeWindowProps> = ({
         top: `${position.y}px`,
         width: `${windowSize.width}px`,
         height: `${windowSize.height}px`,
+        maxWidth: availableBounds.width ? `${Math.max(0, availableBounds.width - position.x)}px` : undefined,
+        maxHeight: availableBounds.height ? `${Math.max(0, availableBounds.height - position.y)}px` : undefined,
         resize: "both",
         overflow: "hidden",
         minWidth: "400px",
